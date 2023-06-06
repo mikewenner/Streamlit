@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 from openbb_terminal.core.plots.plotly_helper import OpenBBFigure, theme  # noqa: F401
 from openbb_terminal.sdk import openbb
 
@@ -32,32 +33,34 @@ dow_futs = dow_futs.drop(columns=["Open", "High", "Low", "Adj Close", "Volume"])
 indicies_plot_df = pd.concat([plot_onedf, dow_futs, sp_futs], axis=1)
 indicies_plot_df.columns = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
                             "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"
-                           
-]
-
-#djia = st.line_chart(indicies_plot_df["DJIA"])
-
+                           ]
 
 
 #Streamlit
+
+st.set_option('deprecation.showPyplotGlobalUse', False)
+
 st.set_page_config(
     layout="wide",
     page_title="Bootcamp - Major Indicies Dashboard",
 )
 
-djia = st.line_chart(indicies_plot_df["DJIA"])
-sp500 = st.line_chart(indicies_plot_df["S&P 500"])
+# djia = st.line_chart(indicies_plot_df["DJIA"])
+# sp500 = st.line_chart(indicies_plot_df["S&P 500"])
+
+index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
+                "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"]
 
 #header
 col1, col2, col3, col4 = st.columns([25, 25, 4, 25])
 with col1:
     st.title("Market Data")
 with col2:
-    st.markdown("## RUTGERS BOOTCAMP")
+    st.title("RUTGERS BOOTCAMP")
 with col3:
-    st.markdown("## &")
+    st.title("&")
 with col4:
-    st.markdown("## STREAMLIT")
+    st.title("STREAMLIT")
 
 
 col1, col2 = st.columns([2, 4])
@@ -70,5 +73,9 @@ with col1:
         st.dataframe(data_indicies.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)
 with col2:
     with st.container():
-        st.subheader("Charts")
-        st.selectbox(label = "Select", options = [djia, sp500])
+        # st.subheader("Charts")
+        # indicies = st.selectbox(label = "Choose an index", options = index_list)
+        # title = st.write("Daily Close")
+        selected_column = st.selectbox("Select Index", index_list)
+        plt.plot(indicies_plot_df.index, indicies_plot_df[selected_column])
+        st.pyplot()
