@@ -9,7 +9,10 @@ data_indicies = openbb.economy.indices()
 data_indicies[["Chg", "%Chg"]] = data_indicies[["Chg", "%Chg"]].apply(pd.to_numeric)
 data_indicies = data_indicies.set_index(data_indicies.columns[0])
 
-
+#Pull commodity data
+data_commodities = openbb.economy.futures()
+data_commodities[["Chg", "%Chg"]] = data_commodities[["Chg", "%Chg"]].apply(pd.to_numeric)
+data_commodities = data_commodities.set_index(data_commodities.columns[0])
 
 #Color outputs based positive
 def color_negative_red(val):
@@ -17,24 +20,33 @@ def color_negative_red(val):
         color = "green" if val > 0 else "red"
         return f"color: {color}"
     
+#Create df for plotting    
 plot_onedf = openbb.economy.index(indices= ["dow_dji", "nasdaq", "sp500", "dow_djus", "russell2000", "nyse", "sp400", "cboe_vix"],
     interval = "1d",
     start_date = "2022-05-30",
     end_date = "2023-05-30",
     column = "Close",
     #returns: bool = False,
-                    
 )
 
-#combining ym & es into the index dataframe
+#combining ym & es into the index dataframe, they are not incorporated in economy.index pull
 sp_futs = openbb.futures.historical(symbols = "ES", start_date = "2022-05-30", end_date = "2023-05-30")
 sp_futs = sp_futs.drop(columns=["Open", "High", "Low", "Adj Close", "Volume"])
 dow_futs = openbb.futures.historical(symbols = "YM", start_date = "2022-05-30", end_date = "2023-05-30")
 dow_futs = dow_futs.drop(columns=["Open", "High", "Low", "Adj Close", "Volume"])
 
-indicies_plot_df = pd.concat([plot_onedf, dow_futs, sp_futs], axis=1)
+#create commodities df for plotting
+symbols = ["cl", "bz", "gc", "si", "ng", "rb", "hg", "zc", "zw"]
+comm_df = openbb.futures.historical(symbols = symbols, start_date = "2022-05-30", end_date = "2023-05-30")
+comm_df = comm_df.iloc[:,0:9]
+comm_df.columns = ["Brent Crude","Oil WTIC","Gold","Copper","Natural Gas","Gsoline RBOB","Silver","Corn","Wheat"]
+
+#Final df for plotting Indicies & commodities
+indicies_plot_df = pd.concat([plot_onedf, dow_futs, sp_futs, comm_df], axis=1)
 indicies_plot_df.columns = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
-                            "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"
+                            "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures",
+                           "Brent Crude","Oil WTIC","Gold","Copper","Natural Gas","Gsoline RBOB","Silver","Corn","Wheat"
+                           
                            ]
 
 
@@ -53,7 +65,9 @@ image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/I
 
 
 index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
-                "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"]
+                "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures",
+                "Brent Crude","Oil WTIC","Gold","Copper","Natural Gas","Gsoline RBOB","Silver","Corn","Wheat"
+                ]
 
 #header
 col1, col2, col3, col4 = st.columns([50, 25, 25, 25])
@@ -76,6 +90,11 @@ with col1:
         data_indicies = data_indicies.set_index(data_indicies.columns[0])
         st.dataframe(data_indicies.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)
         st.subheader("Commodities")
+        data_commodities = openbb.economy.futures()
+        data_commodities[["Chg", "%Chg"]] = data_commodities[["Chg", "%Chg"]].apply(pd.to_numeric)
+        data_commodities = data_commodities.set_index(data_commodities.columns[0])
+        data_commodities = data_commodities.drop(data_commodities.index[-1])
+        st.dataframe(data_commodities.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)
         
 with col2:
     with st.container():
