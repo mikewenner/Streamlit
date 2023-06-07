@@ -45,24 +45,27 @@ st.set_page_config(
     page_title="Bootcamp - Major Indicies Dashboard",
 )
 image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
-image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
-image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
+image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/openbb_logo.png'
+image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/streamlit_logo.png'
 
 
 index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
                 "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"]
 
 #header
-col1, col2, col3, col4 = st.columns([25, 25, 4, 25])
+col1, col2, col3, col4, col5 = st.columns([25, 25, 25, 4, 25])
 with col1:
     st.title("Market Data")
 with col2:
     # st.title("RUTGERS BOOTCAMP")
     st.image(image_rut, width = 350)
 with col3:
-    st.title("&")
+    st.image(image_openbb, width = 300)
 with col4:
-    st.title("STREAMLIT")
+    st.title("&")
+with col5:
+    #st.title("STREAMLIT")
+    st.image(image_streamlit, width = 300)
 
 
 col1, col2 = st.columns([2, 4])
