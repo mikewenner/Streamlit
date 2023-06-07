@@ -44,9 +44,10 @@ st.set_page_config(
     layout="wide",
     page_title="Bootcamp - Major Indicies Dashboard",
 )
+image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
+image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
+image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
 
-# djia = st.line_chart(indicies_plot_df["DJIA"])
-# sp500 = st.line_chart(indicies_plot_df["S&P 500"])
 
 index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
                 "NYSE Composite", "Barron's 400", "CBOE Volatility", "DJIA Futures", "S&P 500 Futures"]
@@ -56,7 +57,8 @@ col1, col2, col3, col4 = st.columns([25, 25, 4, 25])
 with col1:
     st.title("Market Data")
 with col2:
-    st.title("RUTGERS BOOTCAMP")
+    # st.title("RUTGERS BOOTCAMP")
+    st.image(image_rut, width = 350)
 with col3:
     st.title("&")
 with col4:
