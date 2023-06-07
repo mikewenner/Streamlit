@@ -9,6 +9,8 @@ data_indicies = openbb.economy.indices()
 data_indicies[["Chg", "%Chg"]] = data_indicies[["Chg", "%Chg"]].apply(pd.to_numeric)
 data_indicies = data_indicies.set_index(data_indicies.columns[0])
 
+
+
 #Color outputs based positive
 def color_negative_red(val):
     if type(val) != "str":
@@ -24,7 +26,7 @@ plot_onedf = openbb.economy.index(indices= ["dow_dji", "nasdaq", "sp500", "dow_d
                     
 )
 
-
+#combining ym & es into the index dataframe
 sp_futs = openbb.futures.historical(symbols = "ES", start_date = "2022-05-30", end_date = "2023-05-30")
 sp_futs = sp_futs.drop(columns=["Open", "High", "Low", "Adj Close", "Volume"])
 dow_futs = openbb.futures.historical(symbols = "YM", start_date = "2022-05-30", end_date = "2023-05-30")
@@ -43,8 +45,9 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
     layout="wide",
     page_title="Bootcamp - Major Indicies Dashboard",
+    page_icon="chart"
 )
-image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
+image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers2.png'
 image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/openbb_logo.png'
 image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/streamlit_logo.png'
 
@@ -54,28 +57,26 @@ index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "R
 
 #header
 col1, col2, col3, col4 = st.columns([50, 25, 25, 25])
-# with col1:
-#     st.title("Market Data")
 with col1:
-    # st.title("RUTGERS BOOTCAMP")
-    st.image(image_rut, width = 300)
+    st.image(image_rut, width = 250)
 with col2:
     st.image(image_openbb, width = 300)
 # with col3:
 #     st.title("&")
 with col4:
-    #st.title("STREAMLIT")
     st.image(image_streamlit, width = 300)
 
 
-col1, col2 = st.columns([2, 4])
+col1, col2 = st.columns([2.25, 4])
 with col1:
     with st.container():
-        st.subheader("US Index Overview")
+        st.subheader("Indicies Overview")
         data_indicies = openbb.economy.indices()
         data_indicies[["Chg", "%Chg"]] = data_indicies[["Chg", "%Chg"]].apply(pd.to_numeric)
         data_indicies = data_indicies.set_index(data_indicies.columns[0])
         st.dataframe(data_indicies.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)
+        st.subheader("Commodities")
+        
 with col2:
     with st.container():
         # st.subheader("Charts")
