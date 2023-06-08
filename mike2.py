@@ -25,7 +25,7 @@ def color_negative_red(val):
 start = (date.today() - relativedelta(months=12)).strftime('%Y-%m-%d')
 end = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
 
-#Create df for plotting    
+#Create df's for plotting    
 plot_onedf = openbb.economy.index(indices= ["dow_dji", "nasdaq", "sp500", "dow_djus", "russell2000", "nyse", "sp400", "cboe_vix"],
     interval = "1d",
     start_date = start,
@@ -33,7 +33,6 @@ plot_onedf = openbb.economy.index(indices= ["dow_dji", "nasdaq", "sp500", "dow_d
     column = "Close",
     #returns: bool = False,
 )
-
 #combining ym & es into the index dataframe, they are not incorporated in economy.index pull
 sp_futs = openbb.futures.historical(symbols = "ES", start_date = start, end_date = end)
 sp_futs = sp_futs.drop(columns=["Open", "High", "Low", "Adj Close", "Volume"])
@@ -91,6 +90,7 @@ with col4:
 st.markdown("\n\n\n\n")
 st.markdown("\n\n\n\n")
 
+# Dashboard DataFrames & corresponding plots
 col1, col2 = st.columns([2.25, 4])
 with col1:
     with st.container():
@@ -114,6 +114,7 @@ with col2:
 
 st.markdown("\n\n\n\n")
 
+# Economic event calendar
 col1, col2, col3 = st.columns([2.5, 5, 1])
 with col2:
     st.subheader("Calendar of Economic Events")
@@ -123,10 +124,12 @@ with col2:
 
 st.markdown("\n\n\n\n")
 
+# Single stock interaction
 st.subheader("Enter Your Favorite Stock Symbol")
 
 text_input = st.text_input("Symbol").upper()
 
+# Company overview, balance sheet & earnings surprise dataframes & csv download
 col1, col2, col3 = st.columns([3, 6, 6])
 with col1:
     st.subheader("Company Overview")
@@ -141,18 +144,19 @@ with col2:
     bal_sheet
     if st.button("Balance Sheet CSV"):
         file_name = f"exported_data_{text_input}_Balance Sheet.csv"
-        st.download_button(label="Download CSV", data=overview.to_csv(index=True), file_name=file_name)
+        st.download_button(label="Download CSV", data=bal_sheet.to_csv(index=True), file_name=file_name)
 with col3:
     st.subheader("Earnings Surprise") # **need to handle the "-" strings before can apply the coloring**
     earnings = openbb.stocks.fa.earnings(text_input)
     earnings
     if st.button("Earnings Surprise CSV"):
         file_name = f"exported_data_{text_input}_Earnings Surprise.csv"
-        st.download_button(label="Download CSV", data=overview.to_csv(index=False), file_name=file_name)
+        st.download_button(label="Download CSV", data=earnings.to_csv(index=False), file_name=file_name)
 
 st.markdown("\n\n\n\n")
 st.markdown("\n\n\n\n")
 
+#Single stock plots price, price tgts & dividend
 col1, col2 = st.columns([4, 4])
 with col1:
     with st.container():
@@ -205,6 +209,15 @@ with col2:
 st.markdown("\n\n\n\n")
 st.markdown("\n\n\n\n")
 
+#Bottom image and thanks
 col1, col2, col3 = st.columns([2.25, 5, 1])
 with col2:
     st.image(image_rut_bootcamp, width = 750)
+
+st.markdown("\n\n\n\n")
+st.markdown("\n\n\n\n")
+
+col1, col2, col3 = st.columns([2.25, 5, 1])
+with col2:
+    st.write("Many thanks to my project team in this Bootcamp:  Eli, Omar & Ron - You guys are awesome!!")
+    st.write("Thanks Dave & Hassaan for a great Bootcamp & an incredible experience!!")
