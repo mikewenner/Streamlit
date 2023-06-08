@@ -6,16 +6,6 @@ from dateutil.relativedelta import relativedelta
 from openbb_terminal.core.plots.plotly_helper import OpenBBFigure, theme  # noqa: F401
 from openbb_terminal.sdk import openbb
 
-from PIL import Image
-from io import BytesIO
-
-def fig_to_img(fig):
-    buf = BytesIO()
-    fig.savefig(buf, format='png')
-    buf.seek(0)
-    img = Image.open(buf)
-    return img
-
 # Pull index data
 data_indicies = openbb.economy.indices()
 data_indicies[["Chg", "%Chg"]] = data_indicies[["Chg", "%Chg"]].apply(pd.to_numeric)
@@ -64,39 +54,6 @@ indicies_plot_df.columns = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Sto
                            
                            ]
 
-def display_chart(fig: OpenBBFigure, nticks: bool = True):
-    if not isinstance(fig, OpenBBFigure):
-        return st.write("No data available")
-
-    if len(fig.layout.title.text) > 40:
-        font_size = 14 if len(fig.layout.title.text) < 70 else 12
-        fig.update_layout(title=dict(font=dict(size=font_size)))
-
-    if nticks:
-        fig.update_layout(xaxis=dict(nticks=5))
-
-    fig.update_layout(
-        legend=dict(
-            bgcolor="rgba(0,0,0,0.5)",
-            bordercolor="#F5EFF3",
-            borderwidth=1,
-            x=0.99,
-            xanchor="right",
-        ),
-    )
-
-    st.plotly_chart(
-        fig.show(external=True),
-        use_container_width=True,
-        config=dict(
-            scrollZoom=True,
-            displaylogo=False,
-            displayModeBar=False,
-        ),
-    )
-
-
-
 #Streamlit
 
 st.set_option('deprecation.showPyplotGlobalUse', False)  #this needed to remove warning when st.pyplot() called
@@ -144,8 +101,7 @@ with col1:
         data_commodities[["Chg", "%Chg"]] = data_commodities[["Chg", "%Chg"]].apply(pd.to_numeric)
         data_commodities = data_commodities.set_index(data_commodities.columns[0])
         data_commodities = data_commodities.drop(data_commodities.index[-1])
-        st.dataframe(data_commodities.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)
-        
+        st.dataframe(data_commodities.style.applymap(color_negative_red, subset=["Chg", "%Chg"]), use_container_width=True)        
 with col2:
     with st.container():
         selected_column = st.selectbox("Select Index", index_list)
@@ -153,13 +109,13 @@ with col2:
         plt.xticks(rotation=30)
         st.pyplot()
 
+
 col1, col2, col3 = st.columns([2.5, 5, 1])
 with col2:
     st.subheader("Calendar of Economic Events")
     data = openbb.economy.events()
     data = data.set_index(data.columns[0])
     st.dataframe(data)
-
 
 st.subheader("Enter Your Favorite Stock Symbol")
 
@@ -198,6 +154,7 @@ with col1:
         plt.xticks(rotation=30)
         plt.ylabel('Price ($)', labelpad=15)  # Adjust labelpad to position the label
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        plt.legend(loc = "upper left")
         st.pyplot()
 with col2:
     with st.container():
@@ -208,8 +165,8 @@ with col2:
         plt.xticks(rotation=30)
         plt.ylabel('Price Target ($)', labelpad=15)  # Adjust labelpad to position the label
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        plt.legend(loc = "upper left")
         st.pyplot()
-
 
 col1, col2 = st.columns([4, 4])
 with col1:
