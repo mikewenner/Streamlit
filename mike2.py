@@ -54,6 +54,38 @@ indicies_plot_df.columns = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Sto
                            
                            ]
 
+def display_chart(fig: OpenBBFigure, nticks: bool = True):
+    if not isinstance(fig, OpenBBFigure):
+        return st.write("No data available")
+
+    if len(fig.layout.title.text) > 40:
+        font_size = 14 if len(fig.layout.title.text) < 70 else 12
+        fig.update_layout(title=dict(font=dict(size=font_size)))
+
+    if nticks:
+        fig.update_layout(xaxis=dict(nticks=5))
+
+    fig.update_layout(
+        legend=dict(
+            bgcolor="rgba(0,0,0,0.5)",
+            bordercolor="#F5EFF3",
+            borderwidth=1,
+            x=0.99,
+            xanchor="right",
+        ),
+    )
+
+    st.plotly_chart(
+        fig.show(external=True),
+        use_container_width=True,
+        config=dict(
+            scrollZoom=True,
+            displaylogo=False,
+            displayModeBar=False,
+        ),
+    )
+
+
 
 #Streamlit
 
@@ -117,5 +149,21 @@ with col2:
 st.subheader("Enter Your Favorite Stock Symbol")
 
 text_input = st.text_input("Symbol").upper()
-new_data = openbb.stocks.load(text_input)
-new_data
+
+col1, col2, col3 = st.columns([3, 6, 6])
+with col1:
+    st.subheader("Company Overview")
+    overview = openbb.stocks.fa.overview(text_input)
+    overview
+with col2:
+    st.subheader("Company Balance Sheet")
+    bal_sheet = openbb.stocks.fa.balance(text_input)
+    bal_sheet
+with col3:
+    st.subheader("Earnings Suprise")
+    earnings = openbb.stocks.fa.earnings(text_input)
+    earnings
+
+# new_data = openbb.stocks.load(text_input)
+# new_data = new_data["Close"]
+# new_data
