@@ -64,6 +64,7 @@ st.set_page_config(
     page_icon="chart"
 )
 image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers2.png'
+image_rut_bootcamp = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers.png'
 image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/openbb_logo.png'
 image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/streamlit_logo.png'
 #image_money = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/money.png'
@@ -87,6 +88,8 @@ with col2:
 with col4:
     st.image(image_streamlit, width = 300)
 
+st.markdown("\n\n\n\n")
+st.markdown("\n\n\n\n")
 
 col1, col2 = st.columns([2.25, 4])
 with col1:
@@ -109,6 +112,7 @@ with col2:
         plt.xticks(rotation=30)
         st.pyplot()
 
+st.markdown("\n\n\n\n")
 
 col1, col2, col3 = st.columns([2.5, 5, 1])
 with col2:
@@ -116,6 +120,8 @@ with col2:
     data = openbb.economy.events()
     data = data.set_index(data.columns[0])
     st.dataframe(data)
+
+st.markdown("\n\n\n\n")
 
 st.subheader("Enter Your Favorite Stock Symbol")
 
@@ -143,6 +149,9 @@ with col3:
     if st.button("Earnings Surprise CSV"):
         file_name = f"exported_data_{text_input}_Earnings Surprise.csv"
         st.download_button(label="Download CSV", data=overview.to_csv(index=False), file_name=file_name)
+
+st.markdown("\n\n\n\n")
+st.markdown("\n\n\n\n")
 
 col1, col2 = st.columns([4, 4])
 with col1:
@@ -191,4 +200,11 @@ with col2:
         plt.yscale("log")
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
         plt.legend(loc = "upper center")
-        st.pyplot()              
+        st.pyplot()   
+
+st.markdown("\n\n\n\n")
+st.markdown("\n\n\n\n")
+
+col1, col2, col3 = st.columns([2.25, 5, 1])
+with col2:
+    st.image(image_rut_bootcamp, width = 750)
