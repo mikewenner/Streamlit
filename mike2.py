@@ -6,6 +6,16 @@ from dateutil.relativedelta import relativedelta
 from openbb_terminal.core.plots.plotly_helper import OpenBBFigure, theme  # noqa: F401
 from openbb_terminal.sdk import openbb
 
+from PIL import Image
+from io import BytesIO
+
+def fig_to_img(fig):
+    buf = BytesIO()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    img = Image.open(buf)
+    return img
+
 # Pull index data
 data_indicies = openbb.economy.indices()
 data_indicies[["Chg", "%Chg"]] = data_indicies[["Chg", "%Chg"]].apply(pd.to_numeric)
@@ -137,6 +147,7 @@ with col2:
     with st.container():
         selected_column = st.selectbox("Select Index", index_list)
         plt.plot(indicies_plot_df.index, indicies_plot_df[selected_column])
+        plt.xticks(rotation=30)
         st.pyplot()
 
 col1, col2, col3 = st.columns([2.5, 5, 1])
@@ -156,14 +167,46 @@ with col1:
     overview = openbb.stocks.fa.overview(text_input)
     overview
 with col2:
-    st.subheader("Company Balance Sheet")
+    st.subheader("Company Balance Sheet") # need list of column headers to pass in
     bal_sheet = openbb.stocks.fa.balance(text_input)
     bal_sheet
 with col3:
-    st.subheader("Earnings Suprise")
+    st.subheader("Earnings Suprise") # **need to handle the "-" strings before can apply the coloring**
     earnings = openbb.stocks.fa.earnings(text_input)
     earnings
 
-# new_data = openbb.stocks.load(text_input)
-# new_data = new_data["Close"]
-# new_data
+col1, col2 = st.columns([4, 4])
+with col1:
+    with st.container():
+        st.subheader(f"Historical 5yr Price:  {text_input}")
+        new_data = openbb.stocks.fa.historical_5(text_input)
+        new_data = new_data["Close"]
+        plt.plot(new_data, color="green")
+        plt.xticks(rotation=30)
+        plt.ylabel('Price ($)', labelpad=15)  # Adjust labelpad to position the label
+        plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        st.pyplot()
+with col2:
+    with st.container():
+        st.subheader(f"Analyst Price Target:  {text_input}")
+        pt = openbb.stocks.fa.pt(text_input)
+        pt = pt.drop(columns = ["Company", "Rating"])
+        plt.plot(pt)
+        plt.xticks(rotation=30)
+        plt.ylabel('Price Target ($)', labelpad=15)  # Adjust labelpad to position the label
+        plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        st.pyplot()
+
+
+col1, col2 = st.columns([4, 4])
+with col1:
+    with st.container():
+        st.subheader(f"Company Dividend Overview:  {text_input}")
+        divs = openbb.stocks.fa.divs(text_input)
+        for column in divs.columns:
+            plt.plot(divs[column], label=column)
+        plt.xticks(rotation=30)
+        plt.ylabel('Annual Div ($/Share)', labelpad=15)  # Adjust labelpad to position the label
+        plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        plt.legend(loc = "lower right")
+        st.pyplot()       
