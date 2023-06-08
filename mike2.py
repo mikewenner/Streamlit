@@ -208,5 +208,17 @@ with col1:
         plt.xticks(rotation=30)
         plt.ylabel('Annual Div ($/Share)', labelpad=15)  # Adjust labelpad to position the label
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
-        plt.legend(loc = "lower right")
-        st.pyplot()       
+        plt.legend(loc = "upper center")
+        st.pyplot()
+with col2:
+    with st.container():
+        st.subheader(f"Dividend Closer Look:  {text_input}")
+        divs = openbb.stocks.fa.divs(text_input)
+        for column in divs.columns:
+            plt.plot(divs[column], label=column)
+        plt.xticks(rotation=30)
+        plt.ylabel('Annual Div (log scale)', labelpad=15)  # Adjust labelpad to position the label
+        plt.yscale("log")
+        plt.gca().yaxis.set_label_coords(1.15, 0.5)
+        plt.legend(loc = "upper center")
+        st.pyplot()              
