@@ -109,6 +109,9 @@ st.set_page_config(
 image_rut = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/rutgers2.png'
 image_openbb = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/openbb_logo.png'
 image_streamlit = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/streamlit_logo.png'
+#image_money = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/money.png'
+#image_exchange = 'https://raw.githubusercontent.com/mikewenner/Streamlit/main/Images/exchange.png'
+
 
 
 index_list = ["DJIA", "Nasdaq Composite", "S&P 500", "DJ Total Stock Market", "Russell 2000",
@@ -152,10 +155,11 @@ with col2:
 
 col1, col2, col3 = st.columns([2.5, 5, 1])
 with col2:
-        st.subheader("Calendar of Economic Events")
-        data = openbb.economy.events()
-        data = data.set_index(data.columns[0])
-        st.dataframe(data)
+    st.subheader("Calendar of Economic Events")
+    data = openbb.economy.events()
+    data = data.set_index(data.columns[0])
+    st.dataframe(data)
+
 
 st.subheader("Enter Your Favorite Stock Symbol")
 
@@ -166,14 +170,23 @@ with col1:
     st.subheader("Company Overview")
     overview = openbb.stocks.fa.overview(text_input)
     overview
+    if st.button("Company Overview CSV"):
+        file_name = f"exported_data_{text_input}_Company Overview.csv"
+        st.download_button(label="Download CSV", data=overview.to_csv(index=True), file_name=file_name)
 with col2:
     st.subheader("Company Balance Sheet") # need list of column headers to pass in
     bal_sheet = openbb.stocks.fa.balance(text_input)
     bal_sheet
+    if st.button("Balance Sheet CSV"):
+        file_name = f"exported_data_{text_input}_Balance Sheet.csv"
+        st.download_button(label="Download CSV", data=overview.to_csv(index=True), file_name=file_name)
 with col3:
-    st.subheader("Earnings Suprise") # **need to handle the "-" strings before can apply the coloring**
+    st.subheader("Earnings Surprise") # **need to handle the "-" strings before can apply the coloring**
     earnings = openbb.stocks.fa.earnings(text_input)
     earnings
+    if st.button("Earnings Surprise CSV"):
+        file_name = f"exported_data_{text_input}_Earnings Surprise.csv"
+        st.download_button(label="Download CSV", data=overview.to_csv(index=False), file_name=file_name)
 
 col1, col2 = st.columns([4, 4])
 with col1:
@@ -206,7 +219,7 @@ with col1:
         for column in divs.columns:
             plt.plot(divs[column], label=column)
         plt.xticks(rotation=30)
-        plt.ylabel('Annual Div ($/Share)', labelpad=15)  # Adjust labelpad to position the label
+        plt.ylabel('Qtr Div ($/Share)', labelpad=15)  # Adjust labelpad to position the label
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
         plt.legend(loc = "upper center")
         st.pyplot()
@@ -217,7 +230,7 @@ with col2:
         for column in divs.columns:
             plt.plot(divs[column], label=column)
         plt.xticks(rotation=30)
-        plt.ylabel('Annual Div (log scale)', labelpad=15)  # Adjust labelpad to position the label
+        plt.ylabel('Qtr Div (log scale)', labelpad=15)
         plt.yscale("log")
         plt.gca().yaxis.set_label_coords(1.15, 0.5)
         plt.legend(loc = "upper center")
