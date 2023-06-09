@@ -220,4 +220,4 @@ st.markdown("\n\n\n\n")
 col1, col2, col3 = st.columns([2.25, 5, 1])
 with col2:
     st.write("Many thanks to my project team in this Bootcamp:  Eli, Omar & Ron - You guys are awesome!!")
-    st.write("Thanks Dave & Hassaan for a great Bootcamp & an incredible experience!!")
+    st.write("Thanks Dave & Hassaan for a great Bootcamp & an incredible experience!!!")
