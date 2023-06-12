@@ -21,7 +21,8 @@ def color_negative_red(val):
     if type(val) != "str":
         color = "green" if val > 0 else "red"
         return f"color: {color}"
-    
+
+#Start and end dates    
 start = (date.today() - relativedelta(months=12)).strftime('%Y-%m-%d')
 end = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
 
